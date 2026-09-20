@@ -9,6 +9,7 @@
   "scripts": {
     "dev": "nodemon server.js",
     "start": "node server.js",
+    "test": "node --test tests/*.test.js",
     "seed": "node seed.js",
     "lint": "node --check app.js server.js api/index.js seed.js db/index.js utils/hashChain.js routes/auth.js routes/patients.js routes/logs.js routes/admin.js middleware/auth.js middleware/requireAdmin.js",
     "clean": "rm -rf hospital.db hospital.db-wal hospital.db-shm"

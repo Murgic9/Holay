@@ -1,6 +1,8 @@
 import { Ward, Staff, Shift, Patient, AccessLog, ChainAnchor} from '../models/index.js';
 import { sequelize } from '../db/index.js';
 
+const databaseDialect = sequelize.getDialect();
+
 /**
  * Health check endpoint
  * GET /api/health
@@ -11,14 +13,14 @@ export async function getHealth(req, res) {
 
     res.json({
       status: 'ok',
-      database: 'mysql',
+      database: databaseDialect,
       orm: 'sequelize',
       timestamp: new Date().toISOString()
     });
   } catch (err) {
     res.status(500).json({
       status: 'error',
-      database: 'mysql',
+      database: databaseDialect,
       orm: 'sequelize',
       error: 'Database connection failed',
       details: err.message

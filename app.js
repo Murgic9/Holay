@@ -23,6 +23,7 @@ export function createApp() {
     credentials: false
   }));
   app.use(express.json());
+  app.get('/', (req, res) => res.json({ status: 'ok', service: 'Holay API' }));
   app.use('/auth', authRouter);
   app.use('/patients', patientsRouter);
   app.use('/logs', logsRouter);

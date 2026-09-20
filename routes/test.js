@@ -10,7 +10,7 @@ import {
 
 const router = express.Router();
 
-// GET /api/health - MySQL & Sequelize engine status
+// GET /api/health - database & Sequelize engine status
 router.get('/health', getHealth);
 
 // GET /api/meta - wards, staff and system metrics for UI switcher
