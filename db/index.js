@@ -1,6 +1,7 @@
 import { Sequelize, DataTypes, Op } from 'sequelize';
 import pg from 'pg';
 import dotenv from 'dotenv';
+import sqliteAdapter from '../utils/sqliteAdapter.js';
 
 dotenv.config();
 const dbUrl = process.env.DATABASE_URL || process.env.DB_URL || '';
@@ -13,7 +14,18 @@ const dbName = process.env.DB_NAME || 'hospitaldb';
 
 let sequelize;
 
-if (dbUrl) {
+if (dbDialect === 'sqlite') {
+  sequelize = new Sequelize({
+    dialect: 'sqlite',
+    storage: process.env.DB_STORAGE || `${dbName}.sqlite`,
+    dialectModule: sqliteAdapter,
+    logging: false,
+    define: {
+      timestamps: false,
+      underscored: true
+    }
+  });
+} else if (dbUrl) {
 
   sequelize = new Sequelize(dbUrl, {
   dialect: dbDialect,
@@ -72,9 +84,10 @@ export async function initSchema() {
     });
   }
 
-  await sequelize.query(
-    "UPDATE staff SET email = CONCAT(id, '@hospital.local') WHERE email IS NULL"
-  );
+  const emailExpression = dbDialect === 'sqlite'
+    ? "id || '@hospital.local'"
+    : "CONCAT(id, '@hospital.local')";
+  await sequelize.query(`UPDATE staff SET email = ${emailExpression} WHERE email IS NULL`);
 
   await queryInterface.changeColumn('staff', 'email', {
     type: DataTypes.STRING(255),

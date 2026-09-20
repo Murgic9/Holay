@@ -1,0 +1,1 @@
+window.HOLAY_API_URL = '';

@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Holay | Supervisor audit</title>
+  <link rel="stylesheet" href="./css/styles.css">
+</head>
+<body data-page="supervisor">
+  <div id="offline-banner" class="offline-banner" role="status" aria-live="polite"></div>
+  <header class="topbar"><a class="brand" href="./supervisor.html"><span class="brand-mark small">+</span><span>Holay</span></a><div class="topbar-actions"><span id="staff-chip" class="staff-chip"></span><button class="text-button" id="logout-button" type="button">Sign out</button></div></header>
+  <main class="page-shell">
+    <section class="page-intro"><div><p class="eyebrow">Read-only audit view</p><h1>Supervisor dashboard</h1><p class="muted">A clear record of who accessed what and when.</p></div><div class="immutable-badge">✓ Immutable logs</div></section>
+    <section class="audit-section emergency-section"><div class="section-heading"><div><span class="section-number red">01</span><div><p class="eyebrow">Requires attention</p><h2>Emergency access alerts</h2></div></div><span class="immutable-badge">Immutable</span></div><div class="table-wrap"><table><thead><tr><th>Time</th><th>Who</th><th>Patient</th><th>Reason</th><th>Status</th></tr></thead><tbody id="emergency-logs"><tr><td colspan="5" class="empty-cell">Loading emergency alerts...</td></tr></tbody></table></div></section>
+    <section class="audit-section"><div class="section-heading"><div><span class="section-number yellow">02</span><div><p class="eyebrow">Review pattern</p><h2>Suspicious behavior</h2></div></div><span class="count-label">Demo signal</span></div><div class="suspicious-alert"><span class="alert-icon">!</span><div><strong>High record activity detected</strong><p>Opened 40 records in 10 mins <span>(Normal: 5)</span></p></div><span class="alert-time">Today, 10:42</span></div></section>
+    <section class="audit-section"><div class="section-heading"><div><span class="section-number blue">03</span><div><p class="eyebrow">Complete history</p><h2>Full access log</h2></div></div></div><label class="search-box compact-search"><span aria-hidden="true">⌕</span><input id="log-search" type="search" placeholder="Search the access log" autocomplete="off"></label><div class="table-wrap"><table><thead><tr><th>Time</th><th>Who</th><th>Patient</th><th>Action</th><th>Connection</th></tr></thead><tbody id="access-logs"><tr><td colspan="5" class="empty-cell">Loading access log...</td></tr></tbody></table></div><div class="export-actions"><button id="export-csv" class="secondary-button" type="button">↓ Export CSV</button><button id="export-pdf" class="secondary-button" type="button">↗ Print / PDF</button></div></section>
+  </main>
+  <script src="./js/config.js"></script>
+  <script src="./js/offline.js"></script>
+  <script src="./js/app.js"></script>
+</body>
+</html>

@@ -71,7 +71,9 @@ export async function seedDatabase() {
     start_time: now,
     end_time: null
   }));
-  await Shift.bulkCreate(shiftsToCreate);
+  for (const shift of shiftsToCreate) {
+    await Shift.create(shift);
+  }
 
   const rawPatients = [
     { id: 'pat-101', name: 'Eleanor Vance', dob: '1982-04-14', ward_id: 1, diagnosis: 'Acute Appendicitis (Pre-Op)' },

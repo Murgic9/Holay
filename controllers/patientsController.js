@@ -90,6 +90,50 @@ export async function listPatients(req, res) {
   }
 }
 
+export async function createPatient(req, res) {
+  try {
+    const role = req.user.role || 'clerk';
+    if (!['admin', 'doctor', 'nurse'].includes(role)) {
+      return res.status(403).json({ error: 'Only nurses, doctors, and administrators can add patient records.' });
+    }
+
+    const { id, name, dob, ward_id, diagnosis, admitted_at } = req.body || {};
+    if (!id || !name || !dob || ward_id === undefined || !diagnosis) {
+      return res.status(400).json({ error: 'id, name, dob, ward_id, and diagnosis are required' });
+    }
+
+    const wardId = Number.parseInt(ward_id, 10);
+    if (!Number.isInteger(wardId)) {
+      return res.status(400).json({ error: 'ward_id must be a valid number' });
+    }
+
+    const ward = await Ward.findByPk(wardId);
+    if (!ward) return res.status(404).json({ error: `Ward with ID ${wardId} not found` });
+
+    const activeShift = await getActiveShiftForStaff(req.user.staffId);
+    if (role !== 'admin' && (!activeShift || activeShift.ward_id !== wardId)) {
+      return res.status(403).json({ error: 'You can only add patients to your active ward.' });
+    }
+
+    const patient = await Patient.create({
+      id: String(id).trim(),
+      name: String(name).trim(),
+      dob,
+      ward_id: wardId,
+      diagnosis: String(diagnosis).trim(),
+      admitted_at: admitted_at || new Date()
+    });
+
+    return res.status(201).json(await getPatientWithWard(patient.id));
+  } catch (err) {
+    if (err.name === 'SequelizeUniqueConstraintError') {
+      return res.status(409).json({ error: 'A patient with this card number already exists.' });
+    }
+    console.error('Error creating patient:', err);
+    return res.status(500).json({ error: 'Failed to create patient record' });
+  }
+}
+
 /**
  * GET /patients/:id
  * Retrieve a specific patient record if staff is assigned to that patient's ward.
@@ -231,6 +275,7 @@ export default {
   getActiveShiftForStaff,
   getPatientWithWard,
   listPatients,
+  createPatient,
   getPatientById,
   emergencyAccess
 };

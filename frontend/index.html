@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Holay | Sign in</title>
+  <link rel="stylesheet" href="./css/styles.css">
+</head>
+<body class="auth-page">
+  <main class="auth-shell">
+    <section class="brand-block" aria-label="Holay">
+      <div class="brand-mark">+</div>
+      <p class="eyebrow">Holay</p>
+      <h1>Simple, safe access to patient records.</h1>
+      <p class="muted">Every access is recorded. Patient information stays protected.</p>
+    </section>
+
+    <section class="auth-card" aria-labelledby="login-title">
+      <div class="card-heading">
+        <span class="step-badge">1</span>
+        <div>
+          <p class="eyebrow">Welcome</p>
+          <h2 id="login-title">Who are you?</h2>
+        </div>
+      </div>
+      <div class="role-grid" role="group" aria-label="Choose your role">
+        <button class="role-button active" type="button" data-role="staff">
+          <span class="role-icon">+</span>
+          <span>I am Nurse/Clerk</span>
+          <small>View patients in my ward</small>
+        </button>
+        <button class="role-button" type="button" data-role="supervisor">
+          <span class="role-icon">✓</span>
+          <span>I am Supervisor</span>
+          <small>Review the audit trail</small>
+        </button>
+      </div>
+
+      <form id="login-form" class="stack-form">
+        <label for="staff-id">Name or staff ID</label>
+        <input id="staff-id" name="staffId" autocomplete="username" placeholder="e.g. nurse-amelia-pond" required>
+        <label for="password">Password</label>
+        <div class="password-field">
+          <input id="password" name="password" type="password" autocomplete="current-password" placeholder="Enter your password" required>
+          <button id="toggle-password" class="password-toggle" type="button" aria-label="Show password" title="Show password">◉</button>
+        </div>
+        <button id="login-submit" class="primary-button full-width" type="submit">Login <span class="check-icon" aria-hidden="true">✓</span></button>
+        <p id="login-message" class="form-message" role="alert"></p>
+        <p id="login-success" class="form-success" role="status" aria-live="polite"></p>
+      </form>
+      <div class="demo-access" aria-label="Demo login details">
+        <p class="demo-title">Demo access for your team</p>
+        <button class="demo-button" type="button" data-demo-role="staff" data-demo-id="nurse-carol-hathaway">Nurse demo <span>nurse-carol-hathaway</span></button>
+        <button class="demo-button" type="button" data-demo-role="supervisor" data-demo-id="admin-miranda-bailey">Supervisor demo <span>admin-miranda-bailey</span></button>
+        <p class="demo-password">Password for both: <strong>password123</strong></p>
+      </div>
+      <p class="privacy-note"><span aria-hidden="true">●</span> Audit protection is active</p>
+    </section>
+  </main>
+  <script src="./js/config.js"></script>
+  <script src="./js/offline.js"></script>
+  <script src="./js/app.js"></script>
+</body>
+</html>
