@@ -18,7 +18,7 @@
       <div class="sync-pill" id="sync-status"><span class="status-dot"></span><span>Synced</span></div>
     </section>
     <section class="search-panel" aria-label="Search patients">
-      <label class="search-box"><span aria-hidden="true">⌕</span><input id="patient-search" type="search" placeholder="Search patient name or card number" autocomplete="off"><button id="clear-search" class="icon-button" type="button" aria-label="Clear search">×</button></label>
+      <label class="search-box"><span aria-hidden="true">⌕</span><input id="patient-search" type="search" placeholder="Search patient name or card number (e.g. CAR-124)" autocomplete="off"><button id="clear-search" class="icon-button" type="button" aria-label="Clear search">×</button></label>
     </section>
     <section class="section-heading"><div><p class="eyebrow">My ward</p><h2>Patient records</h2></div><span id="patient-count" class="count-label"></span></section>
     <button id="add-patient-button" class="add-record-button" type="button"><span>+</span> Add patient record</button>
@@ -34,7 +34,7 @@
       <h2>Why is urgent access needed?</h2>
       <p class="muted">This action is recorded and a supervisor will be notified.</p>
       <label for="emergency-patient">Patient card number</label>
-      <input id="emergency-patient" required placeholder="e.g. pat-101">
+      <input id="emergency-patient" required placeholder="e.g. CAR-124">
       <label for="emergency-reason">Reason</label>
       <textarea id="emergency-reason" required rows="3" placeholder="Explain the urgent need"></textarea>
       <div class="modal-actions"><button id="cancel-emergency" class="secondary-button" type="button">Cancel</button><button class="danger-button" type="submit">Record access</button></div>
@@ -45,7 +45,7 @@
       <p class="eyebrow">New record</p>
       <h2>Add patient record</h2>
       <p class="muted">The record will be added to your active ward.</p>
-      <label for="new-patient-id">Card number</label><input id="new-patient-id" required placeholder="e.g. pat-131">
+      <label for="new-patient-id">Card number</label><input id="new-patient-id" required placeholder="Any unique number, e.g. 131 or CAR-131">
       <label for="new-patient-name">Patient name</label><input id="new-patient-name" required placeholder="Full name">
       <label for="new-patient-dob">Date of birth</label><input id="new-patient-dob" type="date" required>
       <label for="new-patient-diagnosis">Diagnosis</label><textarea id="new-patient-diagnosis" required rows="3" placeholder="Diagnosis or reason for admission"></textarea>

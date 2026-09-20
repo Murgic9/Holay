@@ -1,4 +1,4 @@
-const API_URL = window.HOLAY_API_URL || 'http://localhost:3000';
+const API_URL = window.HOLAY_API_URL || window.location.origin;
 
 function getSession() {
   try { return JSON.parse(sessionStorage.getItem('hospitalSession') || 'null'); } catch { return null; }
@@ -26,10 +26,12 @@ function setupCommon(session) { document.querySelectorAll('#staff-chip').forEach
 
 function initLogin() {
   let selectedRole = 'staff';
+  const loginForm = document.getElementById('login-form');
+  loginForm?.reset();
   document.querySelectorAll('.role-button').forEach((button) => button.addEventListener('click', () => { selectedRole = button.dataset.role; document.querySelectorAll('.role-button').forEach((item) => item.classList.toggle('active', item === button)); }));
   document.getElementById('toggle-password')?.addEventListener('click', (event) => { const password = document.getElementById('password'); const visible = password.type === 'text'; password.type = visible ? 'password' : 'text'; event.currentTarget.textContent = visible ? '◉' : '○'; event.currentTarget.setAttribute('aria-label', visible ? 'Show password' : 'Hide password'); event.currentTarget.setAttribute('title', visible ? 'Show password' : 'Hide password'); });
-  document.querySelectorAll('[data-demo-id]').forEach((button) => button.addEventListener('click', () => { document.getElementById('staff-id').value = button.dataset.demoId; document.getElementById('password').value = 'password123'; selectedRole = button.dataset.demoRole; document.querySelectorAll('.role-button').forEach((item) => item.classList.toggle('active', item.dataset.role === selectedRole)); }));
-  document.getElementById('login-form')?.addEventListener('submit', async (event) => {
+  document.querySelectorAll('[data-demo-id]').forEach((button) => button.addEventListener('click', () => { document.getElementById('staff-id').value = button.dataset.demoId; document.getElementById('password').value = button.dataset.demoPassword || ''; selectedRole = button.dataset.demoRole; document.querySelectorAll('.role-button').forEach((item) => item.classList.toggle('active', item.dataset.role === selectedRole)); }));
+  loginForm?.addEventListener('submit', async (event) => {
     event.preventDefault();
     const form = new FormData(event.currentTarget);
     const button = event.currentTarget.querySelector('button[type="submit"]');
@@ -37,14 +39,14 @@ function initLogin() {
     try {
       const result = await apiFetch('/auth/login', { method: 'POST', body: JSON.stringify({ staffId: form.get('staffId').trim(), password: form.get('password') }) });
       if (selectedRole === 'supervisor' && result.staff.role !== 'admin') throw new Error('This account is not a supervisor account.');
-      showMessage('login-success', '✓ Password confirmed. Signing you in...'); saveSession(result); window.setTimeout(() => { window.location.href = selectedRole === 'supervisor' ? './supervisor.html' : './dashboard.html'; }, 350);
+      showMessage('login-success', '✓ Password confirmed. Signing you in...'); saveSession(result); window.location.replace(selectedRole === 'supervisor' ? './supervisor.html' : './dashboard.html');
     } catch (error) { showMessage('login-message', error.message || 'Could not sign in. Check your connection and details.'); button.disabled = false; button.innerHTML = 'Login <span class="check-icon" aria-hidden="true">✓</span>'; }
   });
 }
 
 let dashboardPatients = [];
 function patientCard(patient) { return `<a class="patient-card" href="./patient.html?id=${encodeURIComponent(patient.id)}"><div><h3>${escapeHtml(patient.name)}</h3><div class="patient-meta">Card ${escapeHtml(patient.id)} · ${escapeHtml(patient.ward_name || 'Ward')}</div></div><span class="patient-arrow" aria-hidden="true">→</span></a>`; }
-function renderPatients(query = '') { const normalized = query.trim().toLowerCase(); const visible = dashboardPatients.filter((patient) => `${patient.name} ${patient.id}`.toLowerCase().includes(normalized)); const list = document.getElementById('patient-list'); document.getElementById('patient-count').textContent = `${visible.length} patient${visible.length === 1 ? '' : 's'}`; list.innerHTML = visible.length ? visible.map(patientCard).join('') : '<div class="loading-state">No patients found. Try a different name or card number.</div>'; }
+function renderPatients(query = '') { const normalized = query.trim().toLowerCase(); const cardAlias = normalized.match(/^car-(\d+)$/)?.[1]; const visible = dashboardPatients.filter((patient) => { const searchable = `${patient.name} ${patient.id}`.toLowerCase(); return searchable.includes(normalized) || (cardAlias && searchable.includes(`pat-${cardAlias}`)); }); const list = document.getElementById('patient-list'); document.getElementById('patient-count').textContent = `${visible.length} patient${visible.length === 1 ? '' : 's'}`; list.innerHTML = visible.length ? visible.map(patientCard).join('') : '<div class="loading-state">No patients found. Try a different name or card number.</div>'; }
 
 async function initDashboard(session) {
   setupCommon(session); document.getElementById('staff-name').textContent = session.staff.name.split(' ')[0];

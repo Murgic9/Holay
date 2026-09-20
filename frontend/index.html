@@ -36,23 +36,22 @@
         </button>
       </div>
 
-      <form id="login-form" class="stack-form">
+      <form id="login-form" class="stack-form" autocomplete="off">
         <label for="staff-id">Name or staff ID</label>
-        <input id="staff-id" name="staffId" autocomplete="username" placeholder="e.g. nurse-amelia-pond" required>
+        <input id="staff-id" name="staffId" autocomplete="off" placeholder="e.g. nurse-amelia-pond" required>
         <label for="password">Password</label>
         <div class="password-field">
-          <input id="password" name="password" type="password" autocomplete="current-password" placeholder="Enter your password" required>
+          <input id="password" name="password" type="password" autocomplete="new-password" placeholder="Enter your password" required>
           <button id="toggle-password" class="password-toggle" type="button" aria-label="Show password" title="Show password">◉</button>
         </div>
         <button id="login-submit" class="primary-button full-width" type="submit">Login <span class="check-icon" aria-hidden="true">✓</span></button>
         <p id="login-message" class="form-message" role="alert"></p>
         <p id="login-success" class="form-success" role="status" aria-live="polite"></p>
       </form>
-      <div class="demo-access" aria-label="Demo login details">
-        <p class="demo-title">Demo access for your team</p>
-        <button class="demo-button" type="button" data-demo-role="staff" data-demo-id="nurse-carol-hathaway">Nurse demo <span>nurse-carol-hathaway</span></button>
-        <button class="demo-button" type="button" data-demo-role="supervisor" data-demo-id="admin-miranda-bailey">Supervisor demo <span>admin-miranda-bailey</span></button>
-        <p class="demo-password">Password for both: <strong>password123</strong></p>
+      <div class="demo-access" aria-label="Demo staff names">
+        <p class="demo-title">Demo staff</p>
+        <button class="demo-button" type="button" data-demo-role="staff" data-demo-id="nurse-carol-hathaway" data-demo-password="password123">Nurse Carol Hathaway <span>nurse-carol-hathaway</span></button>
+        <button class="demo-button" type="button" data-demo-role="supervisor" data-demo-id="admin-miranda-bailey" data-demo-password="password123">Admin Miranda Bailey <span>admin-miranda-bailey</span></button>
       </div>
       <p class="privacy-note"><span aria-hidden="true">●</span> Audit protection is active</p>
     </section>

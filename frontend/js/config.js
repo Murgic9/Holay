@@ -1,1 +1,2 @@
-window.HOLAY_API_URL = '';
+const isLocalHost = window.location.protocol === 'file:' || ['localhost', '127.0.0.1', '::1'].includes(window.location.hostname);
+window.HOLAY_API_URL = window.HOLAY_API_URL || (isLocalHost ? 'http://localhost:3000' : window.location.origin);
