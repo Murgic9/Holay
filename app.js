@@ -15,7 +15,7 @@ export function createApp() {
 
   const allowedOrigins = (process.env.CORS_ORIGIN || '')
     .split(',')
-    .map((origin) => origin.trim())
+    .map((origin) => origin.trim().replace(/\/+$/, ''))
     .filter(Boolean);
 
   app.use(cors({
