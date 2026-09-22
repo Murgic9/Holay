@@ -109,9 +109,19 @@ export async function verifyChain() {
   }
 
   let expectedPrevHash = GENESIS_PREV_HASH;
+  const seenHashes = new Set();
 
   for (let i = 0; i < rows.length; i++) {
     const row = rows[i].toJSON();
+
+    if (seenHashes.has(row.entry_hash)) {
+      return {
+        valid: false,
+        brokenAtId: row.id,
+        reason: `Duplicate entry hash at row id ${row.id}. The log may have been replayed or copied.`
+      };
+    }
+    seenHashes.add(row.entry_hash);
 
     if (row.prev_hash !== expectedPrevHash) {
       return {

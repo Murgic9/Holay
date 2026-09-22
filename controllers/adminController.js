@@ -1,7 +1,7 @@
 import crypto from 'crypto';
-import { Ward, Staff, Shift } from '../models/index.js';
+import { Ward, Staff, Shift, Patient } from '../models/index.js';
 import { sequelize } from '../db/index.js';
-import { anchorChain } from '../utils/hashChain.js';
+import { anchorChain, appendAuditLog } from '../utils/hashChain.js';
 
 /**
  * POST /admin/reassign-shift
@@ -100,7 +100,78 @@ export async function anchorNow(req, res) {
   }
 }
 
+export async function verifyPatientCredentials(req, res) {
+  try {
+    const patientId = req.query.id ? String(req.query.id).trim() : null;
+    const patients = await Patient.findAll({
+      where: patientId ? { id: patientId } : {},
+      include: [{ model: Ward, as: 'ward' }],
+      order: [['id', 'ASC']]
+    });
+
+    const records = patients.map((patient) => {
+      const record = patient.toJSON();
+      const missingFields = ['id', 'name', 'dob', 'ward_id', 'diagnosis']
+        .filter((field) => record[field] === null || record[field] === undefined || String(record[field]).trim() === '');
+      if (!record.ward) missingFields.push('ward');
+      return {
+        id: record.id,
+        name: record.name,
+        dob: record.dob,
+        diagnosis: record.diagnosis,
+        ward_id: record.ward_id,
+        ward_name: record.ward?.name || null,
+        admitted_at: record.admitted_at,
+        verified: missingFields.length === 0,
+        missingFields
+      };
+    });
+
+    return res.json({
+      verified: records.every((record) => record.verified),
+      total: records.length,
+      records
+    });
+  } catch (err) {
+    console.error('Error verifying patient credentials:', err);
+    return res.status(500).json({ error: 'Failed to verify patient credentials' });
+  }
+}
+
+export async function deletePatient(req, res) {
+  try {
+    const patientId = String(req.params.id || '').trim();
+    const patient = await Patient.findByPk(patientId, {
+      include: [{ model: Ward, as: 'ward' }]
+    });
+
+    if (!patient) {
+      return res.status(404).json({ error: 'Patient record not found' });
+    }
+
+    const record = patient.toJSON();
+    await patient.destroy();
+    await appendAuditLog({
+      staff_id: req.user.staffId,
+      patient_id: record.id,
+      action: 'DELETE_RECORD',
+      result: 'GRANTED',
+      reason: 'Administrator deleted patient record',
+      staff_ward_at_time: req.user.role === 'admin' ? 'All wards' : 'Unassigned',
+      patient_ward_at_time: record.ward?.name || 'Unknown Ward',
+      timestamp: new Date().toISOString()
+    });
+
+    return res.json({ message: 'Patient record deleted.', patientId: record.id });
+  } catch (err) {
+    console.error('Error deleting patient:', err);
+    return res.status(500).json({ error: 'Failed to delete patient record' });
+  }
+}
+
 export default {
   reassignShift,
-  anchorNow
+  anchorNow,
+  verifyPatientCredentials,
+  deletePatient
 };

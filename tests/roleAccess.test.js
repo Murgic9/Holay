@@ -4,7 +4,8 @@ import assert from 'node:assert/strict';
 import {
   sanitizePatientForRole,
   canEmergencyOverrideRole,
-  canAccessChartInWard
+  canAccessChartInWard,
+  canViewAuditLogs
 } from '../utils/roleAccess.js';
 
 test('clerks receive limited patient details', () => {
@@ -36,4 +37,11 @@ test('ward access is constrained for all roles', () => {
   assert.equal(canAccessChartInWard({ staffRole: 'doctor', staffWardId: 1, patientWardId: 2 }), false);
   assert.equal(canAccessChartInWard({ staffRole: 'admin', staffWardId: null, patientWardId: 2 }), true);
   assert.equal(canAccessChartInWard({ staffRole: 'clerk', staffWardId: 1, patientWardId: 1 }), true);
+});
+
+test('only supervisors and administrators can view audit logs', () => {
+  assert.equal(canViewAuditLogs('admin'), true);
+  assert.equal(canViewAuditLogs('supervisor'), true);
+  assert.equal(canViewAuditLogs('doctor'), false);
+  assert.equal(canViewAuditLogs('nurse'), false);
 });

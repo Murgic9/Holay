@@ -20,13 +20,13 @@
     <section class="search-panel" aria-label="Search patients">
       <label class="search-box"><span aria-hidden="true">⌕</span><input id="patient-search" type="search" placeholder="Search patient name or card number (e.g. CAR-124)" autocomplete="off"><button id="clear-search" class="icon-button" type="button" aria-label="Clear search">×</button></label>
     </section>
-    <section class="section-heading"><div><p class="eyebrow">My ward</p><h2>Patient records</h2></div><span id="patient-count" class="count-label"></span></section>
-    <button id="add-patient-button" class="add-record-button" type="button"><span>+</span> Add patient record</button>
-    <div id="patient-list" class="patient-list" aria-live="polite"><div class="loading-state">Loading patient records...</div></div>
     <section class="emergency-panel">
       <div><span class="emergency-symbol">!</span><div><h2>Need urgent access?</h2><p>Use this only when a patient's safety is at immediate risk. A supervisor will be notified.</p></div></div>
       <button id="emergency-button" class="danger-button" type="button">Emergency access</button>
     </section>
+    <section class="section-heading"><div><p class="eyebrow">My ward</p><h2>Patient records</h2></div><span id="patient-count" class="count-label"></span></section>
+    <button id="add-patient-button" class="add-record-button" type="button"><span>+</span> Add patient record</button>
+    <div id="patient-list" class="patient-list" aria-live="polite"><div class="loading-state">Loading patient records...</div></div>
   </main>
   <div id="emergency-modal" class="modal-backdrop" hidden>
     <form id="emergency-form" class="modal-card">

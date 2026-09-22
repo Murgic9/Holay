@@ -15,7 +15,7 @@ const AccessLog = sequelize.define('AccessLog', {
     allowNull: true
   },
   action: {
-    type: DataTypes.ENUM('LOGIN', 'VIEW_RECORD', 'EMERGENCY_ACCESS', 'DENIED'),
+    type: DataTypes.ENUM('LOGIN', 'VIEW_RECORD', 'EMERGENCY_ACCESS', 'DELETE_RECORD', 'DENIED'),
     allowNull: false
   },
   result: {

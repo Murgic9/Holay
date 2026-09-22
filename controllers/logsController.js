@@ -30,6 +30,28 @@ export async function getLogs(req, res) {
 }
 
 /**
+ * GET /logs/emergency
+ * Retrieve emergency access events separately so they remain prominent in audit views.
+ */
+export async function getEmergencyLogs(req, res) {
+  try {
+    const limit = Math.max(1, Math.min(500, parseInt(req.query.limit, 10) || 100));
+    const offset = Math.max(0, parseInt(req.query.offset, 10) || 0);
+    const { count, rows } = await AccessLog.findAndCountAll({
+      where: { action: 'EMERGENCY_ACCESS' },
+      order: [['id', 'DESC']],
+      limit,
+      offset
+    });
+
+    return res.json({ total: count, limit, offset, logs: rows.map((row) => row.toJSON()) });
+  } catch (err) {
+    console.error('Error fetching emergency logs:', err);
+    return res.status(500).json({ error: 'Failed to retrieve emergency logs' });
+  }
+}
+
+/**
  * GET /logs/verify
  * Cryptographically verifies the hash chain and verifies against the latest anchor.
  */
@@ -76,6 +98,7 @@ export async function getOverridesSummary(req, res) {
 
 export default {
   getLogs,
+  getEmergencyLogs,
   verifyChainHandler,
   getOverridesSummary
 };

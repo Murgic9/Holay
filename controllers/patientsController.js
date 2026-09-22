@@ -15,7 +15,19 @@ export async function getActiveShiftForStaff(staffId) {
     include: [{ model: Ward, as: 'ward' }]
   });
 
-  if (!shift) return null;
+  if (!shift) {
+    const staff = await Staff.findByPk(staffId);
+    if (!staff) return null;
+
+    const defaultWard = await Ward.findOne({ where: { name: staff.default_ward } });
+    if (!defaultWard) return null;
+
+    return {
+      shift_id: null,
+      ward_id: defaultWard.id,
+      ward_name: defaultWard.name
+    };
+  }
 
   return {
     shift_id: shift.id,
@@ -69,7 +81,7 @@ export async function listPatients(req, res) {
     }
 
     const patients = await Patient.findAll({
-      where: {},
+      where: isAdmin ? {} : { ward_id: activeShift.ward_id },
       include: [{ model: Ward, as: 'ward' }],
       order: [['name', 'ASC']]
     });
@@ -160,7 +172,11 @@ export async function getPatientById(req, res) {
     const staffWardName = activeShift ? activeShift.ward_name : 'Unassigned';
     const staffWardId = activeShift ? activeShift.ward_id : null;
     const patientWardName = patient.ward_name;
-    const canAccess = true;
+    const canAccess = canAccessChartInWard({
+      staffRole: role,
+      staffWardId,
+      patientWardId: patient.ward_id
+    });
 
     if (canAccess) {
       await appendAuditLog({

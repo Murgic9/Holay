@@ -40,6 +40,10 @@ export function canEmergencyOverrideRole(role) {
   return !!ROLE_ACCESS[role]?.canEmergencyOverride;
 }
 
+export function canViewAuditLogs(role) {
+  return role === 'admin' || role === 'supervisor';
+}
+
 export function canAccessChartInWard({ staffRole, staffWardId, patientWardId }) {
   if (!staffRole) return false;
   if (staffRole === 'admin') return true;
@@ -61,6 +65,10 @@ export function sanitizePatientForRole(patient, role) {
   }
 
   if (safeRole === 'doctor' || safeRole === 'nurse' || safeRole === 'admin') {
+    return base;
+  }
+
+  if (safeRole === 'supervisor') {
     return base;
   }
 
